@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ffmpeg:
+    image: ffmpeg-nvidia:v2
+    volumes:
+      - /media:/media
+      - $PWD:/data
+      - /usr/lib/nvidia-384/:/usr/local/nvidia/lib/
+    command: sleep 999999999
