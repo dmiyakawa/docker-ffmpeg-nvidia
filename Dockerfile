@@ -1,4 +1,7 @@
 FROM nvidia/cuda:8.0-devel
+ENV LANG C.UTF-8
+ENV FFMPEG_VERSION 3.4.2
+ENV NODE_VERSION 9.7.1
 
 WORKDIR /tmp
 
@@ -6,9 +9,9 @@ COPY sources.list /etc/apt/
 
 RUN apt-get update && apt-get install -y git build-essential yasm cmake libtool libc6 libc6-dev unzip wget libnuma1 libnuma-dev frei0r-plugins-dev libgnutls28-dev libass-dev libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev libopenjpeg-dev libopus-dev librtmp-dev libsoxr-dev libspeex-dev libtheora-dev libvo-amrwbenc-dev libvorbis-dev libvpx-dev libwebp-dev libx264-dev libx265-dev libxvidcore-dev
 
-RUN wget http://7xqh5p.com1.z0.glb.clouddn.com/FFmpeg-release-3.3.zip && unzip FFmpeg-release-3.3.zip
+RUN wget http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz -O ffmpeg.tar.gz && tar -xvf ffmpeg.tar.gz
 
-RUN cd FFmpeg-release-3.3 && \
+RUN cd ffmpeg-${FFMPEG_VERSION} && \
     ./configure --enable-nonfree \
                 --disable-shared \
                 --enable-nvenc \
@@ -48,10 +51,12 @@ RUN cd FFmpeg-release-3.3 && \
                 --extra-cflags=-I/usr/local/cuda/include \
                 --extra-ldflags=-L/usr/local/cuda/lib64 && \
     make -j 8 && \
-    make install
+    make install  && \
+    make clean
 
 
-RUN wget https://npm.taobao.org/mirrors/node/latest-v9.x/node-v9.7.1-linux-x64.tar.gz && \
-    tar -xvf node-v9.7.1-linux-x64.tar.gz && \
-    cp -rf node-v9.7.1-linux-x64/* /usr/local/ && \
+
+RUN wget https://npm.taobao.org/mirrors/node/latest-v9.x/node-v${NODE_VERSION}-linux-x64.tar.gz && \
+    tar -xvf node-v${NODE_VERSION}-linux-x64.tar.gz && \
+    cp -rf node-v${NODE_VERSION}-linux-x64/* /usr/local/ && \
     npm config set registry https://registry.npm.taobao.org/
