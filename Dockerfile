@@ -1,7 +1,6 @@
 FROM nvidia/cuda:8.0-devel
 ENV LANG C.UTF-8
 ENV FFMPEG_VERSION 3.4.2
-ENV NODE_VERSION 9.7.1
 
 WORKDIR /tmp
 
@@ -54,9 +53,3 @@ RUN cd ffmpeg-${FFMPEG_VERSION} && \
     make install  && \
     make clean
 
-
-
-RUN wget https://npm.taobao.org/mirrors/node/latest-v9.x/node-v${NODE_VERSION}-linux-x64.tar.gz && \
-    tar -xvf node-v${NODE_VERSION}-linux-x64.tar.gz && \
-    cp -rf node-v${NODE_VERSION}-linux-x64/* /usr/local/ && \
-    npm config set registry https://registry.npm.taobao.org/
